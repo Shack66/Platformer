@@ -19,13 +19,13 @@ public abstract class Entity {
 		
 	}
 	
-	protected void drawHitbox(Graphics g) {
+	protected void drawHitbox(Graphics g, int xLevelOffset) {
 		//Para el debugging del hitbox
 		g.setColor(Color.PINK);
-		g.drawRect((int) hitbox.x, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
+		g.drawRect((int) hitbox.x - xLevelOffset, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
 	}
 
-	protected void initHitbox(float x, float y, float width, float height) {
+	protected void initHitbox(float x, float y, int width, int height) {
 		hitbox = new Rectangle2D.Float((int) x, (int) y, width, height);
 	}
 	

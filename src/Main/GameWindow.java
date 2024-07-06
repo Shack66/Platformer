@@ -14,9 +14,9 @@ public class GameWindow {
 		
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Terminación de la ventana
 		jframe.add(gamePanel); //Se agrega el cuadro donde se va a hacer todo
-		jframe.setLocationRelativeTo(null); //Mueve el sprite
 		jframe.setResizable(false);
 		jframe.pack();
+		jframe.setLocationRelativeTo(null); //Mueve el sprite
 		jframe.setVisible(true); //Muestra la ventana
 		jframe.addWindowFocusListener(new WindowFocusListener() { //Para detectar si se pierde el "enfoque" y volver todos los booleanos falsos para así detener los botones
 
