@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import Gamestates.Gamestate;
 import Gamestates.Menu;
 import Gamestates.Playing;
+import Utils.LoadSave;
 
 public class Game implements Runnable {
 	
@@ -30,6 +31,7 @@ public class Game implements Runnable {
 		
 		gamePanel = new GamePanel(this);
 		gameWindow = new GameWindow(gamePanel);
+		gamePanel.setFocusable(true);
 		gamePanel.requestFocus();
 		
 		startGameLoop();
