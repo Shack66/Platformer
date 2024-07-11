@@ -2,6 +2,7 @@ package Gamestates;
 
 import java.awt.event.MouseEvent;
 
+import Audio.AudioPlayer;
 import Main.Game;
 import Ui.MenuButton;
 
@@ -19,6 +20,15 @@ public class State {
 	
 	public Game getGame() {
 		return game;
+	}
+	
+	public void setGamestate(Gamestate state) {
+		switch (state) {
+		case MENU -> game.getAudioPlayer().playSong(AudioPlayer.MENU_1); //Si el valor es menu entonces llama al metodo playSong del objeto AudioPlayer y reproduce la cancion del menu
+		case PLAYING -> game.getAudioPlayer().setLevelSong(game.getPlaying().getLevelManager().getLevelIndex());
+		}
+		
+		Gamestate.state = state;
 	}
 
 }

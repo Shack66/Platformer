@@ -48,7 +48,7 @@ public class AudioPlayer {
 		String[] effectNames = {"die", "jump", "gameover", "lvlcompleted", "attack"};
 		effects = new Clip[effectNames.length];
 		for (int i = 0; i < effects.length; i++)
-			songs[i] = getClip(effectNames[i]);
+			effects[i] = getClip(effectNames[i]);
 		
 		updateEffectsVolume();
 		
