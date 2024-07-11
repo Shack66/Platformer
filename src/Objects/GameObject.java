@@ -63,7 +63,6 @@ public class GameObject {
 		return objType;
 	}
 
-
 	public Rectangle2D.Float getHitbox() {
 		return hitbox;
 	}
@@ -84,7 +83,6 @@ public class GameObject {
 		return xDrawOffset;
 	}
 
-
 	public int getyDrawOffset() {
 		return yDrawOffset;
 	}
@@ -93,5 +91,8 @@ public class GameObject {
 		return aniIndex;
 	}
 	
+	public int getAniTick() {
+		return aniTick;
+	}
 
 }

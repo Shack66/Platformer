@@ -39,7 +39,7 @@ public class HelpMethods {
 		
 		return isTileSolid((int) xIndex, (int) yIndex, lvlData);
 	}
-	
+		
 	public static boolean isTileSolid ( int xTile, int yTile, int[][] lvlData) {
 		int value = lvlData[yTile][xTile];
 		
@@ -89,12 +89,32 @@ public class HelpMethods {
 			return isSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
 	}
 	
-	public static boolean isAllTilesWalkable(int xStart, int xEnd, int y, int[][] lvlData) {
-		for (int i = 0; i < xEnd - xStart; i++) {
+	public static boolean canCannonSeePlayer(int[][] lvlData, Rectangle2D.Float firstHitbox, Rectangle2D.Float secondHitbox, int yTile) {
+		int firstXTile = (int) (firstHitbox.x / Game.TILES_SIZE);		
+		int secondXTile = (int) (secondHitbox.x / Game.TILES_SIZE);
+
+		//Se verifica si no hay obstaculos entre el primer hasta el segundo hitbox (solo de vista, no si se puede caminar)
+		if (firstXTile > secondXTile) 
+			return isAllTilesClear(secondXTile, firstXTile, yTile, lvlData);
+			
+		 else 
+			return isAllTilesClear(firstXTile, secondXTile, yTile, lvlData);
+
+	}
+	
+	public static boolean isAllTilesClear(int xStart, int xEnd, int y, int[][] lvlData) {
+		for (int i = 0; i < xEnd - xStart; i++) 
 			if (isTileSolid(xStart + i, y, lvlData))
 				return false;
-			if (!isTileSolid(xStart + i, y + 1, lvlData))
-				return false;
+			
+		return true;
+	}
+	
+	public static boolean isAllTilesWalkable(int xStart, int xEnd, int y, int[][] lvlData) {
+		if (isAllTilesClear(xStart, xEnd, y, lvlData))
+			for (int i = 0; i < xEnd - xStart; i++) {
+				if (!isTileSolid(xStart + i, y + 1, lvlData))
+					return false;
 		}
 		return true;
 	}
@@ -127,7 +147,7 @@ public class HelpMethods {
 	public static ArrayList<Crabby> getCrabsImg(BufferedImage img) {
 		ArrayList<Crabby> list = new ArrayList<>();
 		for (int j = 0; j < img.getHeight(); j++) 
-			for (int i = 0; i <img.getWidth(); i++) {
+			for (int i = 0; i < img.getWidth(); i++) {
 				Color color = new Color(img.getRGB(i, j));
 				int value = color.getGreen();
 				if (value == CRABBY)
@@ -138,7 +158,7 @@ public class HelpMethods {
 
 	public static Point getPlayerSpawn(BufferedImage img) {
 		for (int j = 0; j < img.getHeight(); j++) 
-			for (int i = 0; i <img.getWidth(); i++) {
+			for (int i = 0; i < img.getWidth(); i++) {
 				Color color = new Color(img.getRGB(i, j));
 				int value = color.getGreen();
 				if (value == 100)
@@ -150,7 +170,7 @@ public class HelpMethods {
 	public static ArrayList<Potion> getPotions(BufferedImage img) {
 		ArrayList<Potion> list = new ArrayList<>();
 		for (int j = 0; j < img.getHeight(); j++) 
-			for (int i = 0; i <img.getWidth(); i++) {
+			for (int i = 0; i < img.getWidth(); i++) {
 				Color color = new Color(img.getRGB(i, j));
 				int value = color.getBlue();
 				if (value == RED_POTION || value == BLUE_POTION)
@@ -160,8 +180,9 @@ public class HelpMethods {
 	}
 	public static ArrayList<GameContainer> getContainers(BufferedImage img) {
 		ArrayList<GameContainer> list = new ArrayList<>();
+		
 		for (int j = 0; j < img.getHeight(); j++) 
-			for (int i = 0; i <img.getWidth(); i++) {
+			for (int i = 0; i < img.getWidth(); i++) {
 				Color color = new Color(img.getRGB(i, j));
 				int value = color.getBlue();
 				if (value == BOX || value == BARREL)
@@ -172,8 +193,9 @@ public class HelpMethods {
 	
 	public static ArrayList<Spike> getSpikes(BufferedImage img) {
 		ArrayList<Spike> list = new ArrayList<>();
+		
 		for (int j = 0; j < img.getHeight(); j++) 
-			for (int i = 0; i <img.getWidth(); i++) {
+			for (int i = 0; i < img.getWidth(); i++) {
 				Color color = new Color(img.getRGB(i, j));
 				int value = color.getBlue();
 				if (value == SPIKE)
@@ -181,6 +203,6 @@ public class HelpMethods {
 			}
 		return list;
 	}
-
+	
 }
 	

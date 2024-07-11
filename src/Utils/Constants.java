@@ -6,14 +6,14 @@ public class Constants {
 	
 	public static final float GRAVITY = 0.04f * Game.SCALE;
 	public static final int ANI_SPEED = 25;
-	
+		
 	public static class ObjectConstants {
 		public static final int RED_POTION = 0; //+salud
 		public static final int BLUE_POTION = 1; //+poder
 		public static final int BARREL = 2;
 		public static final int BOX = 3;
 		public static final int SPIKE = 4;
-		
+
 		public static final int RED_POTION_VALUE = 15;
 		public static final int BLUE_POTION_VALUE = 10;
 		

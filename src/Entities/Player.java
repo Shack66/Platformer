@@ -49,6 +49,8 @@ public class Player extends Entity {
 	private boolean attackChecked = false;
 	private Playing playing;
 	
+	private int tileY = 0;
+	
 	public Player(float x, float y, int width, int height, Playing playing) {
 		super(x, y, width, height);
 		this.playing = playing;
@@ -77,7 +79,16 @@ public class Player extends Entity {
 		updateHealthBar();
 
 		if (currentHealth <= 0) {
-			playing.setGameOver(true);
+			if (state != DEAD) {
+				state = DEAD;
+				aniTick = 0;
+				aniIndex = 0;
+				playing.setPlayerDying(true);
+			} else if (aniIndex == getSpriteAmount(DEAD) - 1 && aniTick >= ANI_SPEED - 1) { //-1 porque serian 8 sprites y se cuenta de 0 a 7
+				playing.setGameOver(true);
+			} else
+				updateAnimationTick();
+			
 			return;
 		}
 		
@@ -87,6 +98,7 @@ public class Player extends Entity {
 		if (moving) {
 			checkPotionTouched();
 			checkSpikesTouched();
+			tileY = (int)(hitbox.y / Game.TILES_SIZE);
 		}
 		if (attacking)
 			checkAttack();
@@ -347,5 +359,9 @@ public class Player extends Entity {
 			inAir = true;
 		
 	}	
+	
+	public int getTileY() {
+		return tileY;
+	}
 
 }
