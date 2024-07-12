@@ -107,9 +107,9 @@ public class AudioPlayer {
 	}
 	
 	public void playEffect(int effect) {
-		effects[effect].setMicrosecondPosition(0); //se resetea el effecto desde al inicio del mismo
+		if (effects[effect].getMicrosecondPosition() > 0) //si el efecto (accion) ya ha empezado
+			effects[effect].setMicrosecondPosition(0); // se resetea el efecto desde el inicio del mismo
 		effects[effect].start(); // se reproduce el efecto
-		
 	}
 	
 	public void playSong (int song) {

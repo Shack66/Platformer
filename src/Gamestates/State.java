@@ -22,6 +22,7 @@ public class State {
 		return game;
 	}
 	
+	@SuppressWarnings("incomplete-switch")
 	public void setGamestate(Gamestate state) {
 		switch (state) {
 		case MENU -> game.getAudioPlayer().playSong(AudioPlayer.MENU_1); //Si el valor es menu entonces llama al metodo playSong del objeto AudioPlayer y reproduce la cancion del menu

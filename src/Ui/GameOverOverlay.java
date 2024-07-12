@@ -4,7 +4,6 @@ import static Utils.Constants.UI.URMButtons.URM_SIZE;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
@@ -62,10 +61,6 @@ public class GameOverOverlay {
 	public void update() {
 		menu.update();
 		play.update();
-	}
-	
-	public void keyPressed(KeyEvent e) {
-
 	}
 	
 	private boolean isIn(UrmButton b, MouseEvent e) {

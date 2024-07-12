@@ -47,7 +47,6 @@ public class GameOptions extends State implements Statemethods {
 	public void update() {
 		menuB.update();
 		audioOptions.update();
-		
 	}
 
 	@Override
@@ -80,7 +79,6 @@ public class GameOptions extends State implements Statemethods {
 			audioOptions.mouseReleased(e);
 		
 		menuB.resetBools();
-		
 	}
 
 	@Override
@@ -91,26 +89,22 @@ public class GameOptions extends State implements Statemethods {
 			menuB.setMouseOver(true);
 		else
 			audioOptions.mouseMoved(e);
-
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
 			Gamestate.state = Gamestate.MENU;
-
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
+		// No se usa		
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		// No se usa		
 	}
 	
 	private boolean isIn(MouseEvent e, PauseButton b) {

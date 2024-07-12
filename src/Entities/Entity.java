@@ -1,8 +1,12 @@
 package Entities;
 
+import static Utils.Constants.Directions.DOWN;
+import static Utils.Constants.Directions.LEFT;
+import static Utils.Constants.Directions.UP;
+import static Utils.HelpMethods.canMoveHere;
+
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 
 import Main.Game;
@@ -19,7 +23,11 @@ public abstract class Entity {
 	protected int maxHealth;
 	protected int currentHealth;
 	protected Rectangle2D.Float attackBox; //el espacio (caja) en el que el enemigo y el jugador atacan
-	protected float walkSpeed = 1.0f * Game.SCALE;
+	protected float walkSpeed;
+	
+	protected int pushBackDir;
+	protected float pushDrawOffset;
+	protected int pushBackOffsetDir = UP;
 
 
 	public Entity(float x, float y, int width, int height) {
@@ -28,6 +36,31 @@ public abstract class Entity {
 		this.width = width;
 		this.height = height;
 		
+	}
+	
+	protected void updatePushBackDrawOffset() {
+		float speed = 0.95f;
+		float limit = -30f;
+		
+		if (pushBackOffsetDir == UP) {
+			pushDrawOffset -= speed;
+			if (pushDrawOffset <= limit)
+				pushBackOffsetDir = DOWN;
+		} else {
+			pushDrawOffset += speed;
+			if (pushDrawOffset >= 0)
+				pushDrawOffset = 0;
+		}
+	}
+	
+	protected void pushBack(int pushBackDir, int[][] lvlData, float speedMulti) {
+		float xSpeed = 0;
+		if (pushBackDir == LEFT)
+			xSpeed = -walkSpeed;
+		else xSpeed = walkSpeed;
+		
+		if (canMoveHere(hitbox.x + xSpeed * speedMulti, hitbox.y, hitbox.width, hitbox.height, lvlData))
+			hitbox.x += xSpeed * speedMulti;
 	}
 	
 	protected void drawAttackBox(Graphics g, int xLvlOffset) {
@@ -44,12 +77,7 @@ public abstract class Entity {
 	protected void initHitbox(int width, int height) {
 		hitbox = new Rectangle2D.Float(x, y, (int) (width * Game.SCALE), (int) (height * Game.SCALE));
 	}
-	
-//	protected void updateHitbox() {
-//		hitbox.x = (int) x;
-//		hitbox.y = (int) y;
-//	}
-	
+		
 	public Rectangle2D.Float getHitbox() {
 		return hitbox;
 	}
@@ -62,8 +90,9 @@ public abstract class Entity {
 		return aniIndex;
 	}
 	
-	public int getCurrentHealth() {
-		return currentHealth;
+	protected void newState(int state) {
+		this.state = state;
+		aniTick = 0;
+		aniIndex = 0;
 	}
-
 }

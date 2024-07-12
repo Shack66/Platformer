@@ -1,19 +1,8 @@
 package Utils;
 
-import static Utils.Constants.EnemyConstants.CRABBY;
-import static Utils.Constants.ObjectConstants.*;
-
-import java.awt.Color;
-import java.awt.Point;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
-import Entities.Crabby;
 import Main.Game;
-import Objects.GameContainer;
-import Objects.Potion;
-import Objects.Spike;
 
 public class HelpMethods {
 	
@@ -39,36 +28,56 @@ public class HelpMethods {
 		
 		return isTileSolid((int) xIndex, (int) yIndex, lvlData);
 	}
+	
+	public static boolean isEntityInWater(Rectangle2D.Float hitbox, int[][] lvlData) {
+		//Verifica si la entidad está en contacto con el agua solo en la parte superior. No puede alcanzar la paarte inferior si no toca la parte superior.
+		if (getTileValue(hitbox.x, hitbox.y + hitbox.height, lvlData) != 48) // en el cuadro (tile) 48 esta el agua
+			if(getTileValue(hitbox.x + hitbox.width, hitbox.y + hitbox.height, lvlData) != 48)
+				return false;
+		return true;
+	}
+	
+	public static int getTileValue(float xPos, float yPos, int[][] lvlData) {
+		int xCord = (int) (xPos / Game.TILES_SIZE); //Calcula la coordenada en X del Tile
+		int yCord = (int) (yPos / Game.TILES_SIZE); //Calcula la coordenada en Y  del Tile
+		return lvlData[yCord][xCord];
+	}
 		
 	public static boolean isTileSolid ( int xTile, int yTile, int[][] lvlData) {
 		int value = lvlData[yTile][xTile];
 		
-		if (value >= 48 || value < 0 || value != 11)
+		switch (value) {
+		case 11, 48, 49: //Valores en el que el cuadro (tile) no es sólido
+			return false; 
+		default:
 			return true;
-		return false;
+		}
 	}
 
 	public static float getEntityXPosNextToWall(Rectangle2D.Float hitbox, float xSpeed) {
-		int currentTile = (int)(hitbox.x / Game.TILES_SIZE);
-		if (xSpeed > 0) {
-			//Derecha
-			int tileXPos = currentTile * Game.TILES_SIZE;
-			int xOffset = (int)(Game.TILES_SIZE - hitbox.width);
-			return tileXPos + xOffset - 1;
-		} else 
-			//Izquierda
-			return currentTile * Game.TILES_SIZE;
+		//Calcula en qué tile (cuadro) se encuentra la entidad
+	    int currentTile = (int)(hitbox.x / Game.TILES_SIZE); 
+	    
+	    if (xSpeed > 0) { 
+	        //Derecha
+	        int tileXPos = currentTile * Game.TILES_SIZE; // Posición del tile actual
+	        int xOffset = (int)(Game.TILES_SIZE - hitbox.width); //Calcula el espacio entre el borde derecho del hitbox y el borde derecho del tile
+	        return tileXPos + xOffset - 1; //Nueva posición en x justo al lado del tile
+	    } else 
+	        //Izquierda
+	        return currentTile * Game.TILES_SIZE; 
 	}
 		
+	//Ocurre lo mismo que en el constructor anterior, pero en Y con referencia al techo y suelo
 	public static float getEntityYPosUnderRoofOrAboveFloor(Rectangle2D.Float hitbox, float airSpeed) {
 		int currentTile = (int)(hitbox.y / Game.TILES_SIZE);
 		if (airSpeed > 0) {
-			//Cayendo - tocando el suelo
+			//Cayendo - tocando suelo
 			int tileYPos = currentTile * Game.TILES_SIZE;
 			int yOffset = (int)(Game.TILES_SIZE - hitbox.height);
 			return tileYPos + yOffset - 1;
 		} else 
-			//Jumping
+			//Saltando
 			return currentTile * Game.TILES_SIZE;
 		
 	}
@@ -78,130 +87,63 @@ public class HelpMethods {
 		if (!isSolid(hitbox.x, hitbox.y + hitbox.height + 1, lvlData))
 			if(!isSolid(hitbox.x + hitbox.width, hitbox.y + hitbox.height + 1, lvlData))
 				return false;
-		
 		return true;
 	}
 	
+	// Hay dos métodos IsFloor con el mismo nombre (sobrecarga de métodos) para manejar diferentes casos:
 	public static boolean isFloor(Rectangle2D.Float hitbox, float xSpeed, int[][] lvlData) {
-		if (xSpeed > 0)
-			return isSolid(hitbox.x + hitbox.width + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
-		else
-			return isSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
+	    // Verifica si hay suelo considerando la velocidad horizontal (en X)
+	    if (xSpeed > 0)
+	        return isSolid(hitbox.x + hitbox.width + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
+	    else
+	        return isSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
 	}
-	
-	public static boolean canCannonSeePlayer(int[][] lvlData, Rectangle2D.Float firstHitbox, Rectangle2D.Float secondHitbox, int yTile) {
-		int firstXTile = (int) (firstHitbox.x / Game.TILES_SIZE);		
-		int secondXTile = (int) (secondHitbox.x / Game.TILES_SIZE);
 
-		//Se verifica si no hay obstaculos entre el primer hasta el segundo hitbox (solo de vista, no si se puede caminar)
-		if (firstXTile > secondXTile) 
-			return isAllTilesClear(secondXTile, firstXTile, yTile, lvlData);
-			
-		 else 
-			return isAllTilesClear(firstXTile, secondXTile, yTile, lvlData);
-
+	public static boolean isFloor(Rectangle2D.Float hitbox, int[][] lvlData) {
+	    // Verifica si hay suelo directamente debajo de la hitbox (sin considerar la velocidad)
+	    if (!isSolid(hitbox.x + hitbox.width, hitbox.y + hitbox.height + 1, lvlData))
+	        if (!isSolid(hitbox.x, hitbox.y + hitbox.height + 1, lvlData))
+	            return false;
+	    return true;
 	}
-	
+		
+	//Comprueba si el cuadro es solido o no
 	public static boolean isAllTilesClear(int xStart, int xEnd, int y, int[][] lvlData) {
-		for (int i = 0; i < xEnd - xStart; i++) 
-			if (isTileSolid(xStart + i, y, lvlData))
-				return false;
-			
-		return true;
+	    // Verifica si todos los tiles en una fila específica y están libres entre xStart y xEnd
+	    for (int i = 0; i < xEnd - xStart; i++) 
+	        if (isTileSolid(xStart + i, y, lvlData))
+	            return false;
+	    return true;
 	}
-	
+
 	public static boolean isAllTilesWalkable(int xStart, int xEnd, int y, int[][] lvlData) {
-		if (isAllTilesClear(xStart, xEnd, y, lvlData))
-			for (int i = 0; i < xEnd - xStart; i++) {
-				if (!isTileSolid(xStart + i, y + 1, lvlData))
-					return false;
-		}
-		return true;
+	    // Verifica si todos los tiles en una fila específica y están libres
+	    if (isAllTilesClear(xStart, xEnd, y, lvlData))
+	        // Verifica si los tiles en la fila justo debajo son sólidos
+	        for (int i = 0; i < xEnd - xStart; i++) {
+	            if (!isTileSolid(xStart + i, y + 1, lvlData))
+	                return false;
+	    }
+	    return true;
 	}
 	
-	public static boolean isSightClear(int[][] lvlData, Rectangle2D.Float firstHitbox, Rectangle2D.Float secondHitbox, int yTile) {
-		int firstXTile = (int) (firstHitbox.x / Game.TILES_SIZE);		
-		int secondXTile = (int) (secondHitbox.x / Game.TILES_SIZE);
+	public static boolean isSightClear(int[][] lvlData, Rectangle2D.Float enemyBox, Rectangle2D.Float playerBox, int yTile) {
+	    int firstXTile = (int) (enemyBox.x / Game.TILES_SIZE);
 
-		//Se verifica si no hay obstaculos entre el primer hasta el segundo hitbox
-		if (firstXTile > secondXTile) 
-			return isAllTilesWalkable(secondXTile, firstXTile, yTile, lvlData);
-			
-		 else 
-			return isAllTilesWalkable(firstXTile, secondXTile, yTile, lvlData);
-	}
-	
-	public static int[][] getLevelDataImg(BufferedImage img) { //Se carga la imagen (sprite) del nivel
-		int[][] lvlData = new int[img.getHeight()][img.getWidth()];
-		for (int j = 0; j < img.getHeight(); j++) 
-			for (int i = 0; i < img.getWidth(); i++) {
-				Color color = new Color(img.getRGB(i, j));
-				int value = color.getRed();
-				if (value >= 48)
-					value = 0;
-				lvlData[j][i] = value;
-			}
-		return lvlData;
-	}
-	
-	public static ArrayList<Crabby> getCrabsImg(BufferedImage img) {
-		ArrayList<Crabby> list = new ArrayList<>();
-		for (int j = 0; j < img.getHeight(); j++) 
-			for (int i = 0; i < img.getWidth(); i++) {
-				Color color = new Color(img.getRGB(i, j));
-				int value = color.getGreen();
-				if (value == CRABBY)
-					list.add(new Crabby(i * Game.TILES_SIZE, j * Game.TILES_SIZE));
-			}
-		return list;
-	}
+	    //Cuando el jugador está en un borde y a la vista de un enemigo, verificamos ambos lados del jugador
+	    int secondXTile;
+	    //Si el tile debajo de playerBox.x es sólido, usamos playerBox.x
+	    if (isSolid(playerBox.x, playerBox.y + playerBox.height + 1, lvlData))
+	        secondXTile = (int) (playerBox.x / Game.TILES_SIZE);
+	    else
+	        //Si no es sólido, usamos playerBox.x + playerBox.width
+	        secondXTile = (int) ((playerBox.x + playerBox.width) / Game.TILES_SIZE);
 
-	public static Point getPlayerSpawn(BufferedImage img) {
-		for (int j = 0; j < img.getHeight(); j++) 
-			for (int i = 0; i < img.getWidth(); i++) {
-				Color color = new Color(img.getRGB(i, j));
-				int value = color.getGreen();
-				if (value == 100)
-					return new Point (i * Game.TILES_SIZE, j * Game.TILES_SIZE);
-			}
-		return new Point (1 * Game.TILES_SIZE, 1 * Game.TILES_SIZE);
-	}
-	
-	public static ArrayList<Potion> getPotions(BufferedImage img) {
-		ArrayList<Potion> list = new ArrayList<>();
-		for (int j = 0; j < img.getHeight(); j++) 
-			for (int i = 0; i < img.getWidth(); i++) {
-				Color color = new Color(img.getRGB(i, j));
-				int value = color.getBlue();
-				if (value == RED_POTION || value == BLUE_POTION)
-					list.add(new Potion(i * Game.TILES_SIZE, j * Game.TILES_SIZE, value));
-			}
-		return list;
-	}
-	public static ArrayList<GameContainer> getContainers(BufferedImage img) {
-		ArrayList<GameContainer> list = new ArrayList<>();
-		
-		for (int j = 0; j < img.getHeight(); j++) 
-			for (int i = 0; i < img.getWidth(); i++) {
-				Color color = new Color(img.getRGB(i, j));
-				int value = color.getBlue();
-				if (value == BOX || value == BARREL)
-					list.add(new GameContainer(i * Game.TILES_SIZE, j * Game.TILES_SIZE, value));
-			}
-		return list;
-	}
-	
-	public static ArrayList<Spike> getSpikes(BufferedImage img) {
-		ArrayList<Spike> list = new ArrayList<>();
-		
-		for (int j = 0; j < img.getHeight(); j++) 
-			for (int i = 0; i < img.getWidth(); i++) {
-				Color color = new Color(img.getRGB(i, j));
-				int value = color.getBlue();
-				if (value == SPIKE)
-					list.add(new Spike(i * Game.TILES_SIZE, j * Game.TILES_SIZE, SPIKE));
-			}
-		return list;
+	    // Todos los tiles entre firstXTile y secondXTile son caminables?
+	    if (firstXTile > secondXTile)
+	        return isAllTilesWalkable(secondXTile, firstXTile, yTile, lvlData);
+	    else
+	        return isAllTilesWalkable(firstXTile, secondXTile, yTile, lvlData);
 	}
 	
 }

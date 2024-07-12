@@ -1,5 +1,6 @@
 package Ui;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -41,10 +42,12 @@ public class LevelCompletedOverlay {
 	}
 	
 	public void draw(Graphics g) {
+		g.setColor(new Color(0, 0, 0, 200));
+		g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+		
 		g.drawImage(img, bgX, bgY, bgW, bgH, null);
 		next.draw(g);
 		menu.draw(g);
-		
 	}
 	
 	public void update() {
@@ -55,6 +58,7 @@ public class LevelCompletedOverlay {
 	private boolean isIn(UrmButton b, MouseEvent e) {
 		return b.getBounds().contains(e.getX(),e.getY());
 	}
+	
 	public void mouseMoved(MouseEvent e) {
 		next.setMouseOver(false);
 		menu.setMouseOver(false);
@@ -76,6 +80,7 @@ public class LevelCompletedOverlay {
 				playing.loadNextLevel();
 				playing.getGame().getAudioPlayer().setLevelSong(playing.getLevelManager().getLevelIndex());
 			}
+		
 		menu.resetBools();
 		next.resetBools();
 	}
@@ -85,7 +90,6 @@ public class LevelCompletedOverlay {
 			menu.setMousePressed(true);
 		else if (isIn(next, e))
 			next.setMousePressed(true);
-
 	}
 	
 }
