@@ -12,8 +12,6 @@ import utilz.LoadSave;
 public class Credits extends State implements Statemethods {
 	private BufferedImage backgroundImg, creditsImg;
 	private int bgX, bgY, bgW, bgH;
-	@SuppressWarnings("unused")
-	private float bgYFloat;
 
 	private ArrayList<ShowEntity> entitiesList;
 
@@ -62,7 +60,6 @@ public class Credits extends State implements Statemethods {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			bgYFloat = 0;
 			setGamestate(Gamestate.MENU);
 		}
 	}

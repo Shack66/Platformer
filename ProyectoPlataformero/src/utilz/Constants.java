@@ -7,32 +7,6 @@ public class Constants {
 	public static final float GRAVITY = 0.04f * Game.SCALE;
 	public static final int ANI_SPEED = 25;
 
-	public static class Dialogue {
-		public static final int QUESTION = 0;
-		public static final int EXCLAMATION = 1;
-
-		public static final int DIALOGUE_WIDTH = (int) (14 * Game.SCALE);
-		public static final int DIALOGUE_HEIGHT = (int) (12 * Game.SCALE);
-
-		public static int getSpriteAmount(int type) {
-			switch (type) {
-			case QUESTION, EXCLAMATION:
-				return 5;
-			}
-
-			return 0;
-		}
-	}
-
-	public static class Projectiles {
-		public static final int CANNON_BALL_DEFAULT_WIDTH = 15;
-		public static final int CANNON_BALL_DEFAULT_HEIGHT = 15;
-
-		public static final int CANNON_BALL_WIDTH = (int) (Game.SCALE * CANNON_BALL_DEFAULT_WIDTH);
-		public static final int CANNON_BALL_HEIGHT = (int) (Game.SCALE * CANNON_BALL_DEFAULT_HEIGHT);
-		public static final float SPEED = 0.75f * Game.SCALE;
-	}
-
 	public static class ObjectConstants {
 
 		public static final int RED_POTION = 0; //+salud
@@ -64,19 +38,12 @@ public class Constants {
 		public static final int SPIKE_WIDTH = (int) (Game.SCALE * SPIKE_WIDTH_DEFAULT);
 		public static final int SPIKE_HEIGHT = (int) (Game.SCALE * SPIKE_HEIGHT_DEFAULT);
 
-		public static final int CANNON_WIDTH_DEFAULT = 40;
-		public static final int CANNON_HEIGHT_DEFAULT = 26;
-		public static final int CANNON_WIDTH = (int) (CANNON_WIDTH_DEFAULT * Game.SCALE);
-		public static final int CANNON_HEIGHT = (int) (CANNON_HEIGHT_DEFAULT * Game.SCALE);
-
 		public static int getSpriteAmount(int object_type) {
 			switch (object_type) {
 			case RED_POTION, BLUE_POTION:
 				return 7;
 			case BARREL, BOX:
 				return 8;
-			case CANNON_LEFT, CANNON_RIGHT:
-				return 7;
 			}
 			return 1;
 		}
@@ -133,7 +100,6 @@ public class Constants {
 
 	public static class EnemyConstants {
 		public static final int CRABBY = 0;
-		public static final int PINKSTAR = 1;
 		public static final int SHARK = 2;
 
 		public static final int IDLE = 0;
@@ -149,13 +115,6 @@ public class Constants {
 		public static final int CRABBY_DRAWOFFSET_X = (int) (26 * Game.SCALE); //Espacio entre el cuadro del sprite y el sprite en x
 		public static final int CRABBY_DRAWOFFSET_Y = (int) (9 * Game.SCALE); //Espacio entre el cuadro del sprite y el sprite en Y
 
-		public static final int PINKSTAR_WIDTH_DEFAULT = 34;
-		public static final int PINKSTAR_HEIGHT_DEFAULT = 30;
-		public static final int PINKSTAR_WIDTH = (int) (PINKSTAR_WIDTH_DEFAULT * Game.SCALE);
-		public static final int PINKSTAR_HEIGHT = (int) (PINKSTAR_HEIGHT_DEFAULT * Game.SCALE);
-		public static final int PINKSTAR_DRAWOFFSET_X = (int) (9 * Game.SCALE); //Espacio entre el cuadro del sprite y el sprite en x
-		public static final int PINKSTAR_DRAWOFFSET_Y = (int) (7 * Game.SCALE); //Espacio entre el cuadro del sprite y el sprite en Y
-
 		public static final int SHARK_WIDTH_DEFAULT = 34;
 		public static final int SHARK_HEIGHT_DEFAULT = 30;
 		public static final int SHARK_WIDTH = (int) (SHARK_WIDTH_DEFAULT * Game.SCALE);
@@ -169,7 +128,7 @@ public class Constants {
 			case IDLE: {
 				if (enemy_type == CRABBY)
 					return 9;
-				else if (enemy_type == PINKSTAR || enemy_type == SHARK)
+				else if (enemy_type == SHARK)
 					return 8;
 			}
 			case RUNNING:
@@ -192,7 +151,7 @@ public class Constants {
 			switch (enemy_type) {
 			case CRABBY:
 				return 50;
-			case PINKSTAR, SHARK:
+			case SHARK:
 				return 25;
 			default:
 				return 1;
@@ -203,8 +162,6 @@ public class Constants {
 			switch (enemy_type) {
 			case CRABBY:
 				return 15;
-			case PINKSTAR:
-				return 20;
 			case SHARK:
 				return 25;
 			default:

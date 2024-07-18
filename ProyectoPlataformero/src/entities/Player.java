@@ -243,7 +243,7 @@ public class Player extends Entity {
 		if (aniTick >= ANI_SPEED) {
 			aniTick = 0;
 			aniIndex++;
-			if (aniIndex >= getSpriteAmount(state)) { //Terminacion de la animacion del ataque 1
+			if (aniIndex >= getSpriteAmount(state)) { 
 				aniIndex = 0;
 				attacking = false;
 				attackChecked = false;

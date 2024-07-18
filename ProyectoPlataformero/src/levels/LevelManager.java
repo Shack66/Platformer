@@ -40,12 +40,12 @@ public class LevelManager {
 	}
 
 	private void buildAllLevels() {
-		BufferedImage[] allLevels = LoadSave.GetAllLevels();
+		BufferedImage[] allLevels = LoadSave.getAllLevels();
 		for (BufferedImage img : allLevels)
 			levels.add(new Level(img));
 	}
 
-	private void importOutsideSprites() {
+	private void importOutsideSprites() { //Trae la tierra al nivel
 		BufferedImage img = LoadSave.getSpriteAtlas(LoadSave.LEVEL_ATLAS);
 		levelSprite = new BufferedImage[48];
 		for (int j = 0; j < 4; j++) //Altura

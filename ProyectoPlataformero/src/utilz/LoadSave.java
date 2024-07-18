@@ -59,7 +59,7 @@ public class LoadSave {
 		return img;
 	}
 
-	public static BufferedImage[] GetAllLevels() {
+	public static BufferedImage[] getAllLevels() {
 		URL url = LoadSave.class.getResource("/lvls");
 		File file = null;
 

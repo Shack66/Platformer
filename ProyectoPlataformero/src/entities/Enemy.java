@@ -93,30 +93,30 @@ public abstract class Enemy extends Entity {
 		changeWalkDir();
 	}
 
-	protected void turnTowardsPlayer(Player player) { //mueve al enemigo hacia donde esta el jugador
+	protected void turnTowardsPlayer(Player player) {
 		if (player.hitbox.x > hitbox.x)
 			walkDir = RIGHT;
 		else
 			walkDir = LEFT;
 	}
 
-	protected boolean canSeePlayer(int[][] lvlData, Player player) { //Para detectar si el jugador es visible para el enemigo
-		int playerTileY = (int) (player.getHitbox().y / Game.TILES_SIZE); 
+	protected boolean canSeePlayer(int[][] lvlData, Player player) {
+		int playerTileY = (int) (player.getHitbox().y / Game.TILES_SIZE);
 		if (playerTileY == tileY)
 			if (isPlayerInRange(player)) {
-				if (isSightClear(lvlData, hitbox, player.hitbox, tileY)) //Para comprobar si el jugador no tiene ningun obstaculo (como un precipicio o un objeto) en la visibilidad del enemigo
+				if (isSightClear(lvlData, hitbox, player.hitbox, tileY))
 					return true;
 			}
 		return false;
 	}
 
-	protected boolean isPlayerInRange(Player player) { //Dos tipos de rango: visibilidad y ataque
-		int absValue = (int) Math.abs(player.hitbox.x - hitbox.x); //Valor absoluto
+	protected boolean isPlayerInRange(Player player) {
+		int absValue = (int) Math.abs(player.hitbox.x - hitbox.x);
 		return absValue <= attackDistance * 5;
 	}
 
 	protected boolean isPlayerCloseForAttack(Player player) {
-		int absValue = (int) Math.abs(player.hitbox.x - hitbox.x); //Valor absoluto
+		int absValue = (int) Math.abs(player.hitbox.x - hitbox.x);
 		switch (enemyType) {
 		case CRABBY -> {
 			return absValue <= attackDistance;
@@ -166,10 +166,7 @@ public abstract class Enemy extends Entity {
 					case ATTACK, HIT -> state = IDLE;
 					case DEAD -> active = false;
 					}
-				} else if (enemyType == PINKSTAR) {
-					if (state == ATTACK)
-						aniIndex = 3;
-					else {
+				} else {
 						aniIndex = 0;
 						if (state == HIT) {
 							state = IDLE;
@@ -177,7 +174,6 @@ public abstract class Enemy extends Entity {
 						} else if (state == DEAD)
 							active = false;
 					}
-				}
 			}
 		}
 	}
