@@ -7,7 +7,6 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Random;
-import java.util.ArrayList;
 
 import entities.EnemyManager;
 import entities.Player;
@@ -19,11 +18,8 @@ import ui.GameOverOverlay;
 import ui.LevelCompletedOverlay;
 import ui.PauseOverlay;
 import utilz.LoadSave;
-import effects.DialogueEffect;
-import effects.Rain;
 
 import static utilz.Constants.Environment.*;
-import static utilz.Constants.Dialogue.*;
 
 public class Playing extends State implements Statemethods {
 
@@ -35,7 +31,6 @@ public class Playing extends State implements Statemethods {
 	private GameOverOverlay gameOverOverlay;
 	private GameCompletedOverlay gameCompletedOverlay;
 	private LevelCompletedOverlay levelCompletedOverlay;
-	private Rain rain;
 
 	private boolean paused = false;
 
@@ -45,8 +40,6 @@ public class Playing extends State implements Statemethods {
 	private int maxLvlOffsetX;
 
 	private BufferedImage backgroundImg, bigCloud, smallCloud, shipImgs[];
-	private BufferedImage[] questionImgs, exclamationImgs;
-	private ArrayList<DialogueEffect> dialogEffects = new ArrayList<>();
 
 	private int[] smallCloudsPos;
 	private Random rnd = new Random();
@@ -55,7 +48,6 @@ public class Playing extends State implements Statemethods {
 	private boolean lvlCompleted;
 	private boolean gameCompleted;
 	private boolean playerDying;
-	private boolean drawRain;
 
 	private boolean drawShip = true;
 	private int shipAni, shipTick, shipDir = 1;
@@ -78,39 +70,8 @@ public class Playing extends State implements Statemethods {
 		for (int i = 0; i < shipImgs.length; i++)
 			shipImgs[i] = temp.getSubimage(i * 78, 0, 78, 72);
 
-		loadDialogue();
 		calcLvlOffset();
 		loadStartLevel();
-		setDrawRainBoolean();
-	}
-
-	private void loadDialogue() {
-		loadDialogueImgs();
-
-		// Load dialogue array with premade objects, that gets activated when needed.
-		// This is a simple
-		// way of avoiding ConcurrentModificationException error. (Adding to a list that
-		// is being looped through.
-
-		for (int i = 0; i < 10; i++)
-			dialogEffects.add(new DialogueEffect(0, 0, EXCLAMATION));
-		for (int i = 0; i < 10; i++)
-			dialogEffects.add(new DialogueEffect(0, 0, QUESTION));
-
-		for (DialogueEffect de : dialogEffects)
-			de.deactive();
-	}
-
-	private void loadDialogueImgs() {
-		BufferedImage qtemp = LoadSave.getSpriteAtlas(LoadSave.QUESTION_ATLAS);
-		questionImgs = new BufferedImage[5];
-		for (int i = 0; i < questionImgs.length; i++)
-			questionImgs[i] = qtemp.getSubimage(i * 14, 0, 14, 12);
-
-		BufferedImage etemp = LoadSave.getSpriteAtlas(LoadSave.EXCLAMATION_ATLAS);
-		exclamationImgs = new BufferedImage[5];
-		for (int i = 0; i < exclamationImgs.length; i++)
-			exclamationImgs[i] = etemp.getSubimage(i * 14, 0, 14, 12);
 	}
 
 	public void loadNextLevel() {
@@ -144,7 +105,6 @@ public class Playing extends State implements Statemethods {
 		levelCompletedOverlay = new LevelCompletedOverlay(this);
 		gameCompletedOverlay = new GameCompletedOverlay(this);
 
-		rain = new Rain();
 	}
 
 	@Override
@@ -160,9 +120,6 @@ public class Playing extends State implements Statemethods {
 		else if (playerDying)
 			player.update();
 		else {
-			updateDialogue();
-			if (drawRain)
-				rain.update(xLvlOffset);
 			levelManager.update();
 			objectManager.update(levelManager.getCurrentLevel().getLevelData(), player);
 			player.update();
@@ -192,33 +149,6 @@ public class Playing extends State implements Statemethods {
 
 	}
 
-	private void updateDialogue() {
-		for (DialogueEffect de : dialogEffects)
-			if (de.isActive())
-				de.update();
-	}
-
-	private void drawDialogue(Graphics g, int xLvlOffset) {
-		for (DialogueEffect de : dialogEffects)
-			if (de.isActive()) {
-				if (de.getType() == QUESTION)
-					g.drawImage(questionImgs[de.getAniIndex()], de.getX() - xLvlOffset, de.getY(), DIALOGUE_WIDTH, DIALOGUE_HEIGHT, null);
-				else
-					g.drawImage(exclamationImgs[de.getAniIndex()], de.getX() - xLvlOffset, de.getY(), DIALOGUE_WIDTH, DIALOGUE_HEIGHT, null);
-			}
-	}
-
-	public void addDialogue(int x, int y, int type) {
-		// Not adding a new one, we are recycling. #ThinkGreen lol
-		dialogEffects.add(new DialogueEffect(x, y - (int) (Game.SCALE * 15), type));
-		for (DialogueEffect de : dialogEffects)
-			if (!de.isActive())
-				if (de.getType() == type) {
-					de.reset(x, -(int) (Game.SCALE * 15));
-					return;
-				}
-	}
-
 	private void checkCloseToBorder() { //Verifica si el jugador esta cerca del borde
 		int playerX = (int) player.getHitbox().x;
 		int diff = playerX - xLvlOffset;
@@ -236,8 +166,6 @@ public class Playing extends State implements Statemethods {
 		g.drawImage(backgroundImg, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
 
 		drawClouds(g);
-		if (drawRain)
-			rain.draw(g, xLvlOffset);
 
 		if (drawShip)
 			g.drawImage(shipImgs[shipAni], (int) (100 * Game.SCALE) - xLvlOffset, (int) ((288 * Game.SCALE) + shipHeightDelta), (int) (78 * Game.SCALE), (int) (72 * Game.SCALE), null);
@@ -247,7 +175,6 @@ public class Playing extends State implements Statemethods {
 		enemyManager.draw(g, xLvlOffset);
 		player.render(g, xLvlOffset);
 		objectManager.drawBackgroundTrees(g, xLvlOffset);
-		drawDialogue(g, xLvlOffset);
 
 		if (paused) {
 			g.setColor(new Color(0, 0, 0, 150)); //Pone el juego con un fondo oscuro cuando se pausa
@@ -283,20 +210,10 @@ public class Playing extends State implements Statemethods {
 		paused = false;
 		lvlCompleted = false;
 		playerDying = false;
-		drawRain = false;
-
-		setDrawRainBoolean();
 
 		player.resetAll();
 		enemyManager.resetAllEnemies();
 		objectManager.resetAllObjects();
-		dialogEffects.clear();
-	}
-
-	private void setDrawRainBoolean() {
-		// This method makes it rain 20% of the time you load a level.
-		if (rnd.nextFloat() >= 0.8f)
-			drawRain = true;
 	}
 
 	public void setGameOver(boolean gameOver) {

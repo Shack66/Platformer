@@ -2,7 +2,6 @@ package entities;
 
 import static utilz.Constants.EnemyConstants.*;
 import static utilz.HelpMethods.isFloor;
-import static utilz.Constants.Dialogue.*;
 
 import gamestates.Playing;
 
@@ -41,10 +40,6 @@ public class Crabby extends Enemy {
 						newState(ATTACK);
 				}
 				move(lvlData);
-
-				if (inAir)
-					playing.addDialogue((int) hitbox.x, (int) hitbox.y, EXCLAMATION);
-
 				break;
 			case ATTACK:
 				if (aniIndex == 0)

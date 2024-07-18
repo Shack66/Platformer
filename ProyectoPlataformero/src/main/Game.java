@@ -3,6 +3,7 @@ package main;
 import java.awt.Graphics;
 
 import audio.AudioPlayer;
+import gamestates.Credits;
 import gamestates.GameOptions;
 import gamestates.Gamestate;
 import gamestates.Menu;
@@ -18,6 +19,7 @@ public class Game implements Runnable {
 
 	private Playing playing;
 	private Menu menu;
+	private Credits credits;
 	private GameOptions gameOptions;
 	private AudioOptions audioOptions;
 	private AudioPlayer audioPlayer;
@@ -47,6 +49,7 @@ public class Game implements Runnable {
 		audioPlayer = new AudioPlayer();
 		menu = new Menu(this);
 		playing = new Playing(this);
+		credits = new Credits(this);
 		gameOptions = new GameOptions(this);
 	}
 
@@ -55,12 +58,12 @@ public class Game implements Runnable {
 		gameThread.start();
 	}
 
-	@SuppressWarnings("incomplete-switch")
 	public void update() {
 		switch (Gamestate.state) {
 		case MENU -> menu.update();
 		case PLAYING -> playing.update();
 		case OPTIONS -> gameOptions.update();
+		case CREDITS -> credits.update();
 		case QUIT -> System.exit(0);
 		}
 	}
@@ -71,6 +74,7 @@ public class Game implements Runnable {
 		case MENU -> menu.draw(g);
 		case PLAYING -> playing.draw(g);
 		case OPTIONS -> gameOptions.draw(g);
+		case CREDITS -> credits.draw(g);
 		}
 	}
 
@@ -136,6 +140,10 @@ public class Game implements Runnable {
 
 	public Playing getPlaying() {
 		return playing;
+	}
+
+	public Credits getCredits() {
+		return credits;
 	}
 
 	public GameOptions getGameOptions() {

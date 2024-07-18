@@ -3,7 +3,6 @@ package utilz;
 import java.awt.geom.Rectangle2D;
 
 import main.Game;
-import objects.Projectile;
 
 public class HelpMethods {
 
@@ -26,10 +25,6 @@ public class HelpMethods {
 		float yIndex = y / Game.TILES_SIZE;
 
 		return isTileSolid((int) xIndex, (int) yIndex, lvlData);
-	}
-
-	public static boolean isProjectileHittingLevel(Projectile p, int[][] lvlData) {
-		return isSolid(p.getHitbox().x + p.getHitbox().width / 2, p.getHitbox().y + p.getHitbox().height / 2, lvlData);
 	}
 
 	public static boolean isEntityInWater(Rectangle2D.Float hitbox, int[][] lvlData) {

@@ -12,7 +12,7 @@ import static utilz.Constants.EnemyConstants.*;
 public class EnemyManager {
 
 	private Playing playing;
-	private BufferedImage[][] crabbyArr, pinkstarArr, sharkArr;
+	private BufferedImage[][] crabbyArr, sharkArr;
 	private Level currentLevel;
 
 	public EnemyManager(Playing playing) {
@@ -32,12 +32,6 @@ public class EnemyManager {
 				isAnyActive = true;
 			}
 
-		for (Pinkstar p : currentLevel.getPinkstars())
-			if (p.isActive()) {
-				p.update(lvlData, playing);
-				isAnyActive = true;
-			}
-
 		for (Shark s : currentLevel.getSharks())
 			if (s.isActive()) {
 				s.update(lvlData, playing);
@@ -50,7 +44,6 @@ public class EnemyManager {
 
 	public void draw(Graphics g, int xLvlOffset) {
 		drawCrabs(g, xLvlOffset);
-		drawPinkstars(g, xLvlOffset);
 		drawSharks(g, xLvlOffset);
 	}
 
@@ -61,15 +54,6 @@ public class EnemyManager {
 						(int) s.getHitbox().y - SHARK_DRAWOFFSET_Y + (int) s.getPushDrawOffset(), SHARK_WIDTH * s.flipW(), SHARK_HEIGHT, null);
 //				s.drawHitbox(g, xLvlOffset);
 //				s.drawAttackBox(g, xLvlOffset);
-			}
-	}
-
-	private void drawPinkstars(Graphics g, int xLvlOffset) {
-		for (Pinkstar p : currentLevel.getPinkstars())
-			if (p.isActive()) {
-				g.drawImage(pinkstarArr[p.getState()][p.getAniIndex()], (int) p.getHitbox().x - xLvlOffset - PINKSTAR_DRAWOFFSET_X + p.flipX(),
-						(int) p.getHitbox().y - PINKSTAR_DRAWOFFSET_Y + (int) p.getPushDrawOffset(), PINKSTAR_WIDTH * p.flipW(), PINKSTAR_HEIGHT, null);
-//				p.drawHitbox(g, xLvlOffset);
 			}
 	}
 
@@ -95,19 +79,6 @@ public class EnemyManager {
 						return;
 					}
 
-		for (Pinkstar p : currentLevel.getPinkstars())
-			if (p.isActive()) {
-				if (p.getState() == ATTACK && p.getAniIndex() >= 3)
-					return;
-				else {
-					if (p.getState() != DEAD && p.getState() != HIT)
-						if (attackBox.intersects(p.getHitbox())) {
-							p.hurt(20);
-							return;
-						}
-				}
-			}
-
 		for (Shark s : currentLevel.getSharks())
 			if (s.isActive()) {
 				if (s.getState() != DEAD && s.getState() != HIT)
@@ -120,7 +91,6 @@ public class EnemyManager {
 
 	private void loadEnemyImgs() {
 		crabbyArr = getImgArr(LoadSave.getSpriteAtlas(LoadSave.CRABBY_SPRITE), 9, 5, CRABBY_WIDTH_DEFAULT, CRABBY_HEIGHT_DEFAULT);
-		pinkstarArr = getImgArr(LoadSave.getSpriteAtlas(LoadSave.PINKSTAR_ATLAS), 8, 5, PINKSTAR_WIDTH_DEFAULT, PINKSTAR_HEIGHT_DEFAULT);
 		sharkArr = getImgArr(LoadSave.getSpriteAtlas(LoadSave.SHARK_ATLAS), 8, 5, SHARK_WIDTH_DEFAULT, SHARK_HEIGHT_DEFAULT);
 	}
 
@@ -135,8 +105,6 @@ public class EnemyManager {
 	public void resetAllEnemies() {
 		for (Crabby c : currentLevel.getCrabs())
 			c.resetEnemy();
-		for (Pinkstar p : currentLevel.getPinkstars())
-			p.resetEnemy();
 		for (Shark s : currentLevel.getSharks())
 			s.resetEnemy();
 	}
