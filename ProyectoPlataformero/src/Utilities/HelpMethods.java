@@ -105,16 +105,6 @@ public class HelpMethods {
 		return true;
 	}
 
-	public static boolean canCannonSeePlayer(int[][] lvlData, Rectangle2D.Float firstHitbox, Rectangle2D.Float secondHitbox, int yTile) {
-		int firstXTile = (int) (firstHitbox.x / Game.TILES_SIZE);
-		int secondXTile = (int) (secondHitbox.x / Game.TILES_SIZE);
-
-		if (firstXTile > secondXTile)
-			return isAllTilesClear(secondXTile, firstXTile, yTile, lvlData);
-		else
-			return isAllTilesClear(firstXTile, secondXTile, yTile, lvlData);
-	}
-
 	//Comprueba si el cuadro es solido o no
 	public static boolean isAllTilesClear(int xStart, int xEnd, int y, int[][] lvlData) {
 	    // Verifica si todos los tiles en una fila específica y están libres entre xStart y xEnd
