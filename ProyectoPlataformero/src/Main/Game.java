@@ -26,7 +26,7 @@ public class Game implements Runnable {
 
 	//Tiles = cuadros pequeños en el mapa del juego | Mapa del juego = colección de todos estos cuadros puestos uno a lado del otro
 	public final static int TILES_DEFAULT_SIZE = 32;
-	public final static float SCALE = 2f; //Varía dependiendo del dispositivo (es cambiable entre 1.5 y 2 preferiblemente)
+	public final static float SCALE = 1.5f; //Varía dependiendo del dispositivo (es cambiable entre 1.5 y 2 preferiblemente)
 	public final static int TILES_IN_WIDTH = 26;
 	public final static int TILES_IN_HEIGHT = 14;
 	public final static int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALE);
